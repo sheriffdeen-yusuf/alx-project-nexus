@@ -2,6 +2,7 @@ from django.shortcuts import render
 from rest_framework.decorators import api_view
 from rest_framework.response import Response
 from django.contrib.auth import get_user_model
+from django.db.models import Q
 from .models import Cart, CartItem, CustomUser, Product, Category, Reviews, Wishlist
 from .serializers import CartItemSerializer, CartSerializer, CategoryDetailSerializer, CategoryListSerializer, ProductListSerializer, ProductDetailSerializer, ReviewSerializer, WishlistSerializer
 
@@ -143,3 +144,16 @@ def add_to_wishlist(request):
     new_wishlist = Wishlist.objects.create(user=user, product=product)
     serializer = WishlistSerializer(new_wishlist)
     return Response(serializer.data)
+
+
+
+@api_view(['GET'])
+def product_search(request):
+    query = request.query_params.get('query')
+
+    if not query:
+        return Response(({"error": "Please provide a search query"}), status=400)
+    products = Product.objects.filter(Q(name__icontains=query)| Q(description__icontains=query)| Q(category__name__icontains=query))
+    serializer = ProductListSerializer(products, many=True)
+    return Response(serializer.data)
+
