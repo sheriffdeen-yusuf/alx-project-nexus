@@ -149,17 +149,27 @@ USE_TZ = True
 
 STATIC_URL = 'static/'
 STATIC_ROOT = BASE_DIR/'staticfiles' #For whitenoise configs
-#For whitenoise static files compression and caching support
+
+
+MEDIA_URL = 'media/'
+MEDIA_ROOT = BASE_DIR/'media'
+
 STORAGES = {   
-    # ...
+    "default": {
+        "BACKEND": "django.core.files.storage.FileSystemStorage",
+        "OPTIONS": {
+            "location": MEDIA_ROOT,
+            "base_url": MEDIA_URL,
+        },
+    },
+    #For whitenoise static files compression and caching support
     "staticfiles": {
         "BACKEND": "whitenoise.storage.CompressedManifestStaticFilesStorage",
     },
 }
 
 
-MEDIA_URL = 'media/'
-MEDIA_ROOT = BASE_DIR/'media'
+
 
 
 
