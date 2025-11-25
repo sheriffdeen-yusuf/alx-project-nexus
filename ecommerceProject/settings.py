@@ -50,6 +50,7 @@ INSTALLED_APPS = [
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
+    "whitenoise.middleware.WhiteNoiseMiddleware",
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
@@ -81,12 +82,35 @@ WSGI_APPLICATION = 'ecommerceProject.wsgi.application'
 # Database
 # https://docs.djangoproject.com/en/5.2/ref/settings/#databases
 
-DATABASES = {
-    'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': BASE_DIR / 'db.sqlite3',
+PROD_DB = os.getenv("PROD_DB")
+# If you set DB to True you will have the postgres database, if set DB to False, you will the sqlite3 databse.
+
+
+if PROD_DB in ["True", True]:
+    print("Connected to prod db")
+    DATABASES = {
+        'default': {
+            'ENGINE': 'django.db.backends.postgresql',
+            'NAME': 'alx_project_nexus_ecommerce',
+            'USER': 'alx_project_nexus_ecommerce_user',
+            'PASSWORD': os.getenv("PG_PASSWORD"),
+            'HOST': os.getenv("PG_HOST"),
+            'PORT': os.getenv("PG_PORT"),  
+        }
     }
-}
+
+else:
+    print("Connected to dev db")
+    DATABASES = {
+        'default': {
+            'ENGINE': 'django.db.backends.sqlite3',
+            'NAME': BASE_DIR / 'db.sqlite3',
+        }
+    }
+
+
+
+
 
 
 # Password validation
@@ -124,9 +148,20 @@ USE_TZ = True
 # https://docs.djangoproject.com/en/5.2/howto/static-files/
 
 STATIC_URL = 'static/'
-MEDIA_URL = 'media/'
+STATIC_ROOT = BASE_DIR/'staticfiles' #For whitenoise configs
+#For whitenoise static files compression and caching support
+STORAGES = {   
+    # ...
+    "staticfiles": {
+        "BACKEND": "whitenoise.storage.CompressedManifestStaticFilesStorage",
+    },
+}
 
+
+MEDIA_URL = 'media/'
 MEDIA_ROOT = BASE_DIR/'media'
+
+
 
 # Default primary key field type
 # https://docs.djangoproject.com/en/5.2/ref/settings/#default-auto-field
