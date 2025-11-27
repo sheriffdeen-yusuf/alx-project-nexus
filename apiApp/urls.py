@@ -36,6 +36,9 @@ urlpatterns = [
     path("search", views.product_search, name="search"),
     path('orders/', views.list_orders, name='orders'),
 
+    path("user_orders/<str:email>", views.list_orders_by_email, name="list_orders_by_email"),
+    path("create_user/", views.create_user, name="create_user"),
+    path("existing_user/<str:email>", views.existing_user, name="existing_user"),
 
 
     path("create_checkout_session/", views.create_checkout_session, name="create_checkout_session"),

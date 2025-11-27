@@ -5,8 +5,9 @@ from rest_framework.decorators import api_view
 from rest_framework.response import Response
 from django.contrib.auth import get_user_model
 from django.db.models import Q
+from rest_framework import status
 from .models import Cart, CartItem, CustomUser, Order, OrderItem, Product, Category, Reviews, Wishlist
-from .serializers import CartItemSerializer, CartSerializer, CategoryDetailSerializer, CategoryListSerializer, OrderSerializer, ProductListSerializer, ProductDetailSerializer, ReviewSerializer, WishlistSerializer
+from .serializers import CartItemSerializer, CartSerializer, CategoryDetailSerializer, CategoryListSerializer, OrderSerializer, ProductListSerializer, ProductDetailSerializer, ReviewSerializer, UserSerializer, WishlistSerializer
 
 from django.http import HttpResponse
 from django.views.decorators.csrf import csrf_exempt
@@ -272,3 +273,44 @@ def list_orders(request):
     orders = Order.objects.all().order_by('-created_at')
     serializer = OrderSerializer(orders, many=True)
     return Response(serializer.data)
+
+
+@api_view(['GET'])
+def list_orders_by_email(request, email):
+    orders = Order.objects.filter(customer_email=email).order_by('-created_at')
+    serializer = OrderSerializer(orders, many=True)
+    return Response(serializer.data)
+
+
+@api_view(["POST"])
+def create_user(request):
+    username = request.data.get("username")
+    email = request.data.get("email")
+    first_name = request.data.get("first_name")
+    last_name = request.data.get("last_name")
+    profile_picture_url = request.data.get("profile_picture_url")
+    password = request.data.get("password")
+
+    if not username or not password:
+        return Response({"error": "username and password are required"}, status=400)
+    
+
+    new_user = User.objects.create_user(username=username, email=email,
+                                       first_name=first_name, last_name=last_name, password=password)
+    
+    new_user.profile_picture_url = profile_picture_url
+    new_user.save()
+
+    serializer = UserSerializer(new_user)
+    return Response(serializer.data)
+
+
+
+
+@api_view(["GET"])
+def existing_user(request, email):
+    try:
+        User.objects.get(email=email)
+        return Response({"exists": True}, status=status.HTTP_200_OK)
+    except User.DoesNotExist:
+        return Response({"exists": False}, status=status.HTTP_404_NOT_FOUND)
