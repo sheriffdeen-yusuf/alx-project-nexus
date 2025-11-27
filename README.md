@@ -244,8 +244,8 @@ When Stripe confirms payment:
 If using DRF Spectacular:
 
 ```
-/api/schema/swagger-ui/
-/api/schema/redoc/
+/api/swagger/
+/api/redoc/
 ```
 
 ---
