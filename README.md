@@ -1,9 +1,3 @@
-Here’s a **clean, professional, well-structured README.md** for your Django E-Commerce API project — based on all the endpoints you shared, plus the Stripe checkout + webhook flow, user creation system, cart/wishlist logic, and general project structure.
-
-You can copy-paste directly into **README.md**.
-
----
-
 # 🛒 E-Commerce API (Django + DRF + Stripe)
 
 A fully functional **E-Commerce REST API** built with **Django**, **Django REST Framework**, and **Stripe Checkout**.
