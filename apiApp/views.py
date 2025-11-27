@@ -6,7 +6,7 @@ from rest_framework.response import Response
 from django.contrib.auth import get_user_model
 from django.db.models import Q
 from .models import Cart, CartItem, CustomUser, Order, OrderItem, Product, Category, Reviews, Wishlist
-from .serializers import CartItemSerializer, CartSerializer, CategoryDetailSerializer, CategoryListSerializer, ProductListSerializer, ProductDetailSerializer, ReviewSerializer, WishlistSerializer
+from .serializers import CartItemSerializer, CartSerializer, CategoryDetailSerializer, CategoryListSerializer, OrderSerializer, ProductListSerializer, ProductDetailSerializer, ReviewSerializer, WishlistSerializer
 
 from django.http import HttpResponse
 from django.views.decorators.csrf import csrf_exempt
@@ -265,3 +265,10 @@ def fulfill_checkout(session, cart_code):
 
     # Clear the cart after order is created
     cart.delete()
+
+
+@api_view(['GET'])
+def list_orders(request):
+    orders = Order.objects.all().order_by('-created_at')
+    serializer = OrderSerializer(orders, many=True)
+    return Response(serializer.data)
