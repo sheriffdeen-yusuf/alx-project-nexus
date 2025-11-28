@@ -213,6 +213,9 @@ Payload:
 
 ### Stripe Webhook endpoint
 
+NB: USE 4242424242424242 for card no at checkout
+You can use any random cardname and csv number
+
 `POST /api/webhook/`
 
 This webhook:
