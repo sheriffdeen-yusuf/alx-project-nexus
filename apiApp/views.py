@@ -203,8 +203,8 @@ def create_checkout_session(request):
 
            
             mode='payment',
-            success_url="https://sites.google.com/",
-            cancel_url="http://localhost:3000/failed",
+            success_url="https://sites.google.com/view/alx-nexus-success-page/home",
+            cancel_url="https://sites.google.com/view/alx-nexus-success-page/failed",
             metadata = {"cart_code": cart_code}
         )
         return Response({'data': checkout_session})
